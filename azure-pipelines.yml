@@ -3,16 +3,102 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
+parameters:
+- name: build_platforms
+  displayName: Build platforms
+  type: object
+  default:
+    - linux
+    # - linux_aarch64
+    # - macOS
+    # - macOS_aarch64
+    # - windows
+    # - windows_x86
+    # - windows_aarch64
+    # - alpine_x64
+- name: test_platforms
+  displayName: Test platforms
+  type: object
+  default:
+    - linux
+    # - linux_aarch64
+    # - macOS
+    # - macOS_aarch64
+    # - windows
+    # - windows_x86
+    # - windows_aarch64
+    # - alpine_x64
+
+
+name: "$(Year:yyyy).$(Month).$(BuildID)-ci"
+
 trigger:
-- main
+  # to make the ci build more efficient
+  # https://docs.microsoft.com/en-us/azure/devops/pipelines/repos/azure-repos-git?view=azure-devops&tabs=yaml#batching-ci-runs
+  batch: true
+  branches:
+    include:
+      - main
+  # for changes in the nightly, pr, release.yml, etc we will ignore them
+  # also ignore templates/release.yml since it is not used by ci.yml file
+  # paths:
+  #   exclude:
+  #     # from .devops folder
+  #     - .devops/nightly.yml
+  #     - .devops/pr.yml
+  #     - .devops/release.yml
+  #     # from .devops/templates folder
+  #     - .devops/templates/pr
+  #     - .devops/templates/nightly
+  #     - .devops/templates/release
+  #     - .devops/templates/compliance
 
-pool:
-  vmImage: ubuntu-latest
+pr: none
 
-steps:
-- checkout: self
+resources:
+  repositories:
+    - repository: openjdk_azure_devops_harness
+      type: git
+      name: github_move/openjdk-azure-devops-harness
+      ref: refs/heads/main
 
-- script: |
-    echo "Simple test script: running $ ls -alR"
-    ls -alR
-  displayName: 'Test'
+    - repository: devops_demo
+      type: git
+      name: github_move/devops_demo
+      ref: refs/heads/main
+
+variables:
+  JTREG_VERSION: "6.1"
+
+stages:
+  - template: /.devops/templates/ci/build.yml@devops_demo
+    parameters:
+      active_platforms: ${{ parameters.build_platforms }}
+
+  - template: /.devops/templates/ci/build_fastdebug.yml@devops_demo
+    parameters:
+      active_platforms: ${{ parameters.build_platforms }}
+
+  - template: /.devops/templates/shared/basic_test.yml@devops_demo
+    parameters:
+      active_platforms: ${{ parameters.build_platforms }}
+      depends_on:
+        - build
+
+  - template: /.devops/templates/shared/basic_test_fastdebug.yml@devops_demo
+    parameters:
+      active_platforms: ${{ parameters.build_platforms }}
+      depends_on:
+        - build_fastdebug
+
+  - template: /.devops/templates/shared/installers.yml@devops_demo
+    parameters:
+      active_platforms: ${{ parameters.build_platforms }}
+      depends_on:
+        - build
+
+  - template: /.devops/templates/ci/ci_tests.yml@devops_demo
+    parameters:
+      active_platforms: ${{ parameters.test_platforms }}
+      depends_on:
+        - build_fastdebug
