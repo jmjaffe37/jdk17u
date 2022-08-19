@@ -57,10 +57,10 @@ pr: none
 
 resources:
   repositories:
-    - repository: openjdk_azure_devops_harness
-      type: git
-      name: github_move/openjdk-azure-devops-harness
-      ref: refs/head/main
+    # - repository: openjdk_azure_devops_harness
+    #   type: git
+    #   name: github_move/openjdk-azure-devops-harness
+    #   ref: refs/head/main
 
     - repository: devops_demo
       type: git
