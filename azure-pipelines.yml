@@ -65,7 +65,7 @@ resources:
     - repository: devops_demo
       type: git
       name: github_move/devops_demo
-      ref: refs/head/main
+      ref: refs/heads/main
 
 variables:
   JTREG_VERSION: "6.1"
