@@ -70,35 +70,41 @@ resources:
 variables:
   JTREG_VERSION: "6.1"
 
-stages:
-  - template: /.devops/templates/ci/build.yml
-    parameters:
-      active_platforms: ${{ parameters.build_platforms }}
+steps:
+- script: |
+    echo "Simple post test script: running $ ls -AR"
+    ls -AR
+  displayName: 'Run a multi-line script'
 
-  - template: /.devops/templates/ci/build_fastdebug.yml
-    parameters:
-      active_platforms: ${{ parameters.build_platforms }}
+# stages:
+#   - template: /.devops/templates/ci/build.yml
+#     parameters:
+#       active_platforms: ${{ parameters.build_platforms }}
 
-  - template: /.devops/templates/shared/basic_test.yml
-    parameters:
-      active_platforms: ${{ parameters.build_platforms }}
-      depends_on:
-        - build
+#   - template: /.devops/templates/ci/build_fastdebug.yml
+#     parameters:
+#       active_platforms: ${{ parameters.build_platforms }}
 
-  - template: /.devops/templates/shared/basic_test_fastdebug.yml
-    parameters:
-      active_platforms: ${{ parameters.build_platforms }}
-      depends_on:
-        - build_fastdebug
+#   - template: /.devops/templates/shared/basic_test.yml
+#     parameters:
+#       active_platforms: ${{ parameters.build_platforms }}
+#       depends_on:
+#         - build
 
-  - template: /.devops/templates/shared/installers.yml
-    parameters:
-      active_platforms: ${{ parameters.build_platforms }}
-      depends_on:
-        - build
+#   - template: /.devops/templates/shared/basic_test_fastdebug.yml
+#     parameters:
+#       active_platforms: ${{ parameters.build_platforms }}
+#       depends_on:
+#         - build_fastdebug
 
-  - template: /.devops/templates/ci/ci_tests.yml
-    parameters:
-      active_platforms: ${{ parameters.test_platforms }}
-      depends_on:
-        - build_fastdebug
+#   - template: /.devops/templates/shared/installers.yml
+#     parameters:
+#       active_platforms: ${{ parameters.build_platforms }}
+#       depends_on:
+#         - build
+
+#   - template: /.devops/templates/ci/ci_tests.yml
+#     parameters:
+#       active_platforms: ${{ parameters.test_platforms }}
+#       depends_on:
+#         - build_fastdebug
