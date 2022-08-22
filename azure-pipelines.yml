@@ -3,32 +3,31 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
-parameters:
-- name: build_platforms
-  displayName: Build platforms
-  type: object
-  default:
-    - linux
-    # - linux_aarch64
-    # - macOS
-    # - macOS_aarch64
-    # - windows
-    # - windows_x86
-    # - windows_aarch64
-    # - alpine_x64
-- name: test_platforms
-  displayName: Test platforms
-  type: object
-  default:
-    - linux
-    # - linux_aarch64
-    # - macOS
-    # - macOS_aarch64
-    # - windows
-    # - windows_x86
-    # - windows_aarch64
-    # - alpine_x64
-
+# parameters:
+# - name: build_platforms
+#   displayName: Build platforms
+#   type: object
+#   default:
+#     - linux
+#     # - linux_aarch64
+#     # - macOS
+#     # - macOS_aarch64
+#     # - windows
+#     # - windows_x86
+#     # - windows_aarch64
+#     # - alpine_x64
+# - name: test_platforms
+#   displayName: Test platforms
+#   type: object
+#   default:
+#     - linux
+#     # - linux_aarch64
+#     # - macOS
+#     # - macOS_aarch64
+#     # - windows
+#     # - windows_x86
+#     # - windows_aarch64
+#     # - alpine_x64
 
 name: "$(Year:yyyy).$(Month).$(BuildID)-ci"
 
@@ -71,34 +70,4 @@ variables:
   JTREG_VERSION: "6.1"
 
 stages:
-  - template: /.devops/templates/ci/build.yml@devops_demo
-    parameters:
-      active_platforms: ${{ parameters.build_platforms }}
-
-  - template: /.devops/templates/ci/build_fastdebug.yml@devops_demo
-    parameters:
-      active_platforms: ${{ parameters.build_platforms }}
-
-  - template: /.devops/templates/shared/basic_test.yml@devops_demo
-    parameters:
-      active_platforms: ${{ parameters.build_platforms }}
-      depends_on:
-        - build
-
-  - template: /.devops/templates/shared/basic_test_fastdebug.yml@devops_demo
-    parameters:
-      active_platforms: ${{ parameters.build_platforms }}
-      depends_on:
-        - build_fastdebug
-
-  - template: /.devops/templates/shared/installers.yml@devops_demo
-    parameters:
-      active_platforms: ${{ parameters.build_platforms }}
-      depends_on:
-        - build
-
-  - template: /.devops/templates/ci/ci_tests.yml@devops_demo
-    parameters:
-      active_platforms: ${{ parameters.test_platforms }}
-      depends_on:
-        - build_fastdebug
+  - template: /ci_main.yml@devops_demo
