@@ -3,32 +3,6 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
-# parameters:
-# - name: build_platforms
-#   displayName: Build platforms
-#   type: object
-#   default:
-#     - linux
-#     # - linux_aarch64
-#     # - macOS
-#     # - macOS_aarch64
-#     # - windows
-#     # - windows_x86
-#     # - windows_aarch64
-#     # - alpine_x64
-# - name: test_platforms
-#   displayName: Test platforms
-#   type: object
-#   default:
-#     - linux
-#     # - linux_aarch64
-#     # - macOS
-#     # - macOS_aarch64
-#     # - windows
-#     # - windows_x86
-#     # - windows_aarch64
-#     # - alpine_x64
-
 name: "$(Year:yyyy).$(Month).$(BuildID)-ci"
 
 trigger:
@@ -38,19 +12,6 @@ trigger:
   branches:
     include:
       - main
-  # for changes in the nightly, pr, release.yml, etc we will ignore them
-  # also ignore templates/release.yml since it is not used by ci.yml file
-  # paths:
-  #   exclude:
-  #     # from .devops folder
-  #     - .devops/nightly.yml
-  #     - .devops/pr.yml
-  #     - .devops/release.yml
-  #     # from .devops/templates folder
-  #     - .devops/templates/pr
-  #     - .devops/templates/nightly
-  #     - .devops/templates/release
-  #     - .devops/templates/compliance
 
 pr: none
 
